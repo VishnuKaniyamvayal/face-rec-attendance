@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Login from './Pages/Login';
 import AdminPannel from './Pages/AdminPannel';
 import Students from './Pages/Students';
+import AddStudent from './Pages/AddStudent'
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -14,8 +16,10 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/dashboard' element={<AdminPannel/>} />
           <Route path='/students' element={<Students/>} />
+          <Route path='/addstudent' element={<AddStudent/>} />
         </Routes>
       </Router>
+      <ToastContainer/>
     </div>
   );
 }

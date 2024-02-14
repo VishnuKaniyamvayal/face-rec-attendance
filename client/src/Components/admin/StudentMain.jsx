@@ -30,81 +30,99 @@ const StudentMain = () => {
             selector: row => row.year,
             sortable: true,
         },
+        ,
+        {
+            name: 'Action',
+            selector: row => row.edits,
+            sortable: true,
+        },
     ];
     
     const data = [
           {
             id: "1",
-            name: "Favas",
+            name: "tom cruise",
             year: '1954',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: "2",
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 3,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 4,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 5,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 6,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 7,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 8,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 9,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 10,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id:11,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
         },
         {
             id: 12,
-            name: "favas ali",
+            name: "tom cruise",
             year: '1984',
-            department:"cse"
-        },
+            department:"cse",
+            edits: "EDIT" + " DELETE" 
+        }
     ]
 
     const handleDepartment = (e) => {

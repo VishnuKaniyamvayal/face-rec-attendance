@@ -5,8 +5,7 @@ import Webcam from 'react-webcam';
 const Main = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [ face1 , setface1 ] = useState();
-  const [ face2 , setface2 ] = useState();
+  const [ face1 , setface ] = useState();
 
 
   useEffect(() => {
@@ -21,8 +20,52 @@ const Main = () => {
 
 
   }, []);
+  // code to store face data in indexed db
+  const openDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = window.indexedDB.open('FaceDataPoints', 1);
+  
+      request.onerror = (event) => {
+        reject('Error opening database');
+      };
+  
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        const objectStore = db.createObjectStore('FaceData', { keyPath: 'id' });
+      };
+  
+      request.onsuccess = (event) => {
+        const db = event.target.result;
+        resolve(db);
+      };
+    });
+  };
+  
+  const storeDataInDB = async (data) => {
+    try {
+      const db = await openDB();
+      const transaction = db.transaction(['FaceData'], 'readwrite');
+      const objectStore = transaction.objectStore('FaceData');
+      
+      data.forEach((item) => {
+        objectStore.add(item);
+      });
+    } catch (error) {
+      console.error('Error storing data in IndexedDB:', error);
+    }
+  };
+  
 
-  const capture1 = async () => {
+  
+  // To use the functions:
+  const yourData = [];
+  storeDataInDB(yourData);
+  
+
+  
+
+
+  const capture = async () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
       const img = new Image();
@@ -32,25 +75,8 @@ const Main = () => {
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
         
         if (detections) {
-            setface1( detections.descriptor )
+            setface( detections.descriptor )
             console.log('Face Descriptor 1 stored' );
-        }
-      };
-    }
-  };
-
-  const capture2 = async () => {
-    if (webcamRef.current) {
-      const imageSrc = webcamRef.current.getScreenshot();
-      const img = new Image();
-      img.src = imageSrc;
-
-      img.onload = async () => {
-        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-
-        if (detections) {
-            setface2( detections.descriptor )
-          console.log('Face Descriptor 2 stored' );
         }
       };
     }
@@ -70,19 +96,6 @@ const areFaceDescriptorsEqual = (descriptor1, descriptor2, distanceThreshold = 0
     // Compare the distance with the threshold
     return distance < distanceThreshold;
   };
-  
-
-  const handleClick = () => {
-
-    console.log(face1)
-    console.log(face2)
-    const isMatch = areFaceDescriptorsEqual(face1, face2);
-    if (isMatch) {
-        console.log('Face descriptors match!');
-      } else {
-        console.log('Face descriptors do not match.');
-    }
-  }
 
   return (
     <div>
@@ -111,8 +124,7 @@ const areFaceDescriptorsEqual = (descriptor1, descriptor2, distanceThreshold = 0
         </div>
     </>
       </div>
-      {/* <button onClick={capture1}>Capture Face 1</button>
-      <button onClick={capture2}>Capture Face 2</button> */}
+       <button onClick={capture}>Capture Face </button>
       {/* <button onClick={handleClick}>Capture</button> */}
     </div>
   );
