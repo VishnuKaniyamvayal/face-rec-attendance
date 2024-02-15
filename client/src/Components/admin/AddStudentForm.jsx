@@ -98,13 +98,9 @@ const AddStudentForm = () => {
           const getRequest = objectStore.get(1); // Assuming 'id' is the key path
       
           getRequest.onsuccess = (event) => {
-            const existingDataArray = getRequest.result || [];
-      
-            // Append the new data to the existing array
-            existingDataArray.push(newDataObject);
       
             // Store the updated array back in IndexedDB using 'put'
-            const putRequest = objectStore.put(existingDataArray); // No need to provide a key
+            const putRequest = objectStore.put(newDataObject); // No need to provide a key
       
             putRequest.onsuccess = (event) => {
               console.log('Data appended successfully.');
@@ -151,35 +147,18 @@ const AddStudentForm = () => {
             appendDataToDB(studentData);
   
             console.log("stored")
+            setDepartment("");
+            setFaceDescriptor();
+            setStudentName("");
+            setYear("");
+            setRoll("");
+
         }
 
 
     }
 
-    // retrieve data
-
-    const fetchDataFromDB = async () => {
-        try {
-          const db = await openDB();
-          const transaction = db.transaction(['Data'], 'readonly');
-          const objectStore = transaction.objectStore('Data');
-      
-          // Retrieve the data from the object store
-          const getRequest = objectStore.getAll();
-      
-          getRequest.onsuccess = (event) => {
-            const data = getRequest.result;
-            console.log('Retrieved data:', data);
-            // Do something with the retrieved data
-          };
-      
-          getRequest.onerror = (event) => {
-            console.error('Error retrieving data:', getRequest.error);
-          };
-        } catch (error) {
-          console.error('Error accessing IndexedDB:', error);
-        }
-      };
+    
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 px-5">
@@ -214,7 +193,7 @@ const AddStudentForm = () => {
                     </select>
                 </div>
                 <button onClick={handleSubmit} className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Add Student</button>
-                <button onClick={fetchDataFromDB} className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Get</button>
+                {/* <button onClick={fetchDataFromDB} className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Get</button> */}
             </div>
             {/* webcam */}
             <div>
