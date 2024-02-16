@@ -15,18 +15,12 @@ router.post("/register", async (req, res) => {
     const newuser = await new User({
       userType: req.body.userType,
       userFullName: req.body.userFullName,
-      isAdmin:req.body.isAdmin,
-      admissionId: req.body.admissionId,
-      employeeId: req.body.employeeId,
-      age: req.body.age,
       dob: req.body.dob,
       gender: req.body.gender,
-      address: req.body.address,
       mobileNumber: req.body.mobileNumber,
       photo: req.body.photo,
       email: req.body.email,
-      password: hashedPass,
-      isAdmin: req.body.isAdmin,
+      password: hashedPass
     });
 
     /* Save User and Return */
@@ -43,14 +37,11 @@ router.post("/signin", async (req, res) => {
     console.log(req.body, "req");
     const user = req.body.admissionId
       ? await User.findOne({
-          admissionId: req.body.admissionId,
+          email: req.body.email,
         })
       : await User.findOne({
-          employeeId: req.body.employeeId,
+          email: req.body.email,
         });
-
-    console.log(user, "user");
-
     !user && res.status(404).json("User not found");
 
     const validPass = await bcrypt.compare(req.body.password, user.password);

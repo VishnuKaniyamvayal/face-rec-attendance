@@ -1,20 +1,38 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { AuthContext } from '../Context/AuthContext.js'
+
+
 
 
 const Login = () => {
-
-    const [ userName , setUserName ] = useState("");
+    
+    const { dispatch } = useContext(AuthContext)
+    const [ email , setEmail ] = useState("");
     const [ password , setPassword ] = useState("");
 
-    const handleSubmit = ()=>{
+    const API = process.env.REACT_APP_BASE_URL
+
+    const handleSubmit = async ()=>{
+        dispatch({ type: "LOGIN_START" });
         if( !userName || !password )
         {
             alert("Please Fill All Fields");
         }
         else
         {
-            // const response = axios.get()
+            try{
+                const response =  await axios.post( API+"api/auth/signin" , {
+                    email: email,
+                    password:password
+                } )
+                dispatch({ type: "LOGIN_SUCCESS", payload: response.data });
+            }
+            catch(err)
+            {
+                dispatch({ type: "LOGIN_FAILURE", payload: err })
+                setError("Wrong Password Or Username")                
+            }
         }
     }
 
@@ -29,7 +47,7 @@ const Login = () => {
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
                                 Username
                             </label>
-                            <input value={userName} onChange={(e)=>{setUserName(e.target.value)}} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username" />
+                            <input value={email} onChange={(e)=>{setEmail(e.target.value)}} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username" />
                         </div>
                         <div class="mb-6">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">

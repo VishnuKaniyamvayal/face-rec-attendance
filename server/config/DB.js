@@ -2,7 +2,7 @@ import { connect } from "mongoose"
 
 const connectDB = async () => {
   try {
-    const conn = await connect("mongodb://localhost:27017/FaceRec")
+    const conn = await connect("mongodb://localhost:27017/facerec")
     console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline)
   } catch (error) {
     console.log(error)

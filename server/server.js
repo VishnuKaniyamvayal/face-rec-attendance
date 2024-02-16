@@ -24,7 +24,7 @@ app.use("/api/Student", studentRoutes);
 /* MongoDB connection */
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect("mongodb://localhost:27017/sample")
+    const conn = await mongoose.connect("mongodb://localhost:27017/facerec")
     console.log(`MongoDB Connected: ${conn.connection.host}`)
   } catch (error) {
     console.log(error)
