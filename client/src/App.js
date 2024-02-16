@@ -7,6 +7,7 @@ import Students from './Pages/Students';
 import AddStudent from './Pages/AddStudent'
 import { ToastContainer } from 'react-toastify';
 import { AuthContext } from "./Context/AuthContext";
+import EditStudent from "./Pages/EditStudent"
 
 
 function App() {
@@ -16,9 +17,10 @@ function App() {
         <Routes>
           <Route path='/' element={<Detector/>} />
           <Route path='/login' element={<Login/>} />
-          <Route path='/dashboard' element={<AdminPannel/>} />
+          <Route path='/dashboard'  element={<AdminPannel/>} />
           <Route path='/students' element={<Students/>} />
           <Route path='/addstudent' element={<AddStudent/>} />
+          <Route path='/editstudent/:id' element={<EditStudent/>} />
         </Routes>
       </Router>
       <ToastContainer/>

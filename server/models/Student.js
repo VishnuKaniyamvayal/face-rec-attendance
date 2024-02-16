@@ -5,15 +5,15 @@ const StudentSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    studentRoll: {
+    roll: {
         type: String,
         require: true
     },
-    studentYear: {
+    year: {
         type: String,
         require: true
     },
-    studentDepartment: {
+    department: {
         type: String,
         require: true
     },

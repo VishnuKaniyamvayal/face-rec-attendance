@@ -19,7 +19,7 @@ app.use(cors());
 
 /* API Routes */
 app.use("/api/auth", authRoutes);
-app.use("/api/Student", studentRoutes);
+app.use("/api/student", studentRoutes);
 
 /* MongoDB connection */
 const connectDB = async () => {

@@ -1,4 +1,5 @@
 import express from "express";
+import Student from "../models/Student";
 
 
 const router = express.Router();
@@ -11,8 +12,22 @@ router.get( "/getbyyearanddep/:year/:department" , (req,res)=>{
     // code to get all the students
 })
 
-router.post( "/addstudent" , (req,res)=>{
-    // code to add student
+router.post( "/addstudent" , async (req,res)=>{
+    try{
+        const student = new Student({
+            su_id: req.body.su_id,
+            studentName: req.body.studentName,
+            roll: req.body.roll,
+            studentName : req.body.year,
+            department: req.body.department
+        })
+        const studentres = await student.save();
+        res.status(201).json(studentres);
+    }
+    catch(err)
+    {
+        res.status(504).send(err);
+    }
 })
 
 router.delete( "/removestudent" , (req,res)=>{

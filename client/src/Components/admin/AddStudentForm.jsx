@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js"
-import { toast, ToastContainer } from "react-toastify";
+import axios from "axios"
 
 const AddStudentForm = () => {
 
     const webcamRef = useRef(null);
+
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
 
     // load the models
 
@@ -119,7 +121,15 @@ const AddStudentForm = () => {
         }
       };
       
-      
+      const addStudentToDb = async( data )=>{
+
+      try {
+        const response = axios.post(BASE_URL+"api/student/addstudent", data );
+      } catch (error) {
+        console.log(error)
+      }
+
+      }
       
       
       
@@ -144,9 +154,18 @@ const AddStudentForm = () => {
                 department,
                 faceDescriptor
             }
+            var dataToDb = {
+                su_id,
+                studentName,
+                roll,
+                year,
+                department
+            } // face descriptor is not necessary
+
             appendDataToDB(studentData);
+            addStudentToDb(dataToDb);
   
-            console.log("stored")
+            // console.log("stored")
             setDepartment("");
             setFaceDescriptor();
             setStudentName("");

@@ -1,11 +1,13 @@
 import AddStudentForm from "../Components/admin/AddStudentForm"
 import Header from "../Components/admin/Header";
+import Sidebar from "../Components/admin/Sidebar";
 
 const AddStudent = ()=>{
 
     return (
         <>
-        <Header/>        
+        <Sidebar/>        
+        <Header/>
         <AddStudentForm/>
         </>
     )

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import DataTable from 'react-data-table-component'
+import { MdAdd } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const StudentMain = () => {
 
@@ -7,6 +9,8 @@ const StudentMain = () => {
     const [searchYear  , setSearchYear] = useState();
     const [searchField  , setSearchField] = useState();
     const [Data  , SetData] = useState();
+
+    const navigate = useNavigate();
 
     const columns = [
         {
@@ -17,12 +21,14 @@ const StudentMain = () => {
         },
         {
             name: 'Student Name',
+
             selector: row => row.name,
             sortable: true,
         },
         {
             name: 'Department',
             selector: row => row.department,
+
             sortable: true,
         },
         {
@@ -33,10 +39,25 @@ const StudentMain = () => {
         ,
         {
             name: 'Action',
-            selector: row => row.edits,
-            sortable: true,
+            width:"150px",
+            cell:(row)=>{console.log(row) ;return(
+                <div className='flex flex-row gap-4'>
+                <button
+                    className="bg-sky-500 px-2 rounded-md py-1 text-white"
+                    id={row.ID}
+                    onClick={()=>{ navigate("/editstudent/"+row.id) }} // replace with su_id
+                    >
+                    EDIT
+                </button>
+                <button  className='bg-red-500 px-2 rounded-md py-1 text-white'>DELETE</button> 
+                </div>
+            
+            )}
+            
         },
     ];
+
+    
     
     const data = [
           {
@@ -152,12 +173,18 @@ const StudentMain = () => {
                 <option>Mech</option>
                 <option>EEE</option>
                 <option>Civil</option>
-        </select>        
+        </select>
+        <div className='flex flex-row rounded-lg items-center justify-center gap-1 bg-sky-400 px-3 hover:bg-sky-500' onClick={()=>{navigate("/addstudent")}}>
+            <MdAdd size={"21"} className='text-white'/>
+            <button className='text-nowrap text-white'>Add Student</button>
+        </div>        
         </div>
-        <DataTable className='max-w-6xl mx-auto border rounded-lg mt-4'
+        <DataTable className='max-w-5xl mx-auto border rounded-lg mt-4'
             columns={columns}
             data={data}
             pagination
+            highlightOnHover={true}
+            paginationPerPage={"8"}
         />
     </div>
   )
