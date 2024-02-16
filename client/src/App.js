@@ -6,6 +6,8 @@ import AdminPannel from './Pages/AdminPannel';
 import Students from './Pages/Students';
 import AddStudent from './Pages/AddStudent'
 import { ToastContainer } from 'react-toastify';
+import { AuthContext } from "./Context/AuthContext";
+
 
 function App() {
   return (
