@@ -1,5 +1,5 @@
 import express from "express";
-import Student from "../models/Student";
+import Student from "../models/Student.js";
 
 
 const router = express.Router();
@@ -14,11 +14,12 @@ router.get( "/getbyyearanddep/:year/:department" , (req,res)=>{
 
 router.post( "/addstudent" , async (req,res)=>{
     try{
+        console.log(req.body)
         const student = new Student({
             su_id: req.body.su_id,
             studentName: req.body.studentName,
             roll: req.body.roll,
-            studentName : req.body.year,
+            year : req.body.year,
             department: req.body.department
         })
         const studentres = await student.save();

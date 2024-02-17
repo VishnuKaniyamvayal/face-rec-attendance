@@ -34,10 +34,10 @@ const AddStudentForm = () => {
 
 
 
-    const changeName = (e) => { setStudentName(e.target.value) }
-    const changeRoll = (e) => { setRoll(e.target.value) }
-    const changeDepartment = (e) => { setDepartment(e.target.value) }
-    const changeYear = (e) => { setYear(e.target.value); setCamVisible(true) }
+    const changeName = (e) => { setStudentName(e.target.value);console.log(studentName) }
+    const changeRoll = (e) => { setRoll(e.target.value);console.log(roll)  }
+    const changeDepartment = (e) => { setDepartment(e.target.value);console.log(department)  }
+    const changeYear = (e) => { setYear(e.target.value); setCamVisible(true);console.log(year)  }
 
 
     // function to capture descriptor
@@ -125,6 +125,7 @@ const AddStudentForm = () => {
 
       try {
         const response = axios.post(BASE_URL+"api/student/addstudent", data );
+        alert("Student Added");
       } catch (error) {
         console.log(error)
       }
@@ -139,10 +140,10 @@ const AddStudentForm = () => {
         if (!studentName || !roll || !year || !department) {
             alert("Please fill all fields");
         }
-        else if (!faceDescriptor) {
-            setCamVisible(true);
-            alert("Please scan your face")
-        }
+        // else if (!faceDescriptor) {
+        //     setCamVisible(true);
+        //     alert("Please scan your face")
+        // }
         else {
             // create a hash for student unique id
             var su_id = generateRandomHash();
@@ -162,15 +163,13 @@ const AddStudentForm = () => {
                 department
             } // face descriptor is not necessary
 
-            appendDataToDB(studentData);
+            // appendDataToDB(studentData);
             addStudentToDb(dataToDb);
   
             // console.log("stored")
             setDepartment("");
             setFaceDescriptor();
             setStudentName("");
-            setYear("");
-            setRoll("");
 
         }
 
@@ -197,18 +196,20 @@ const AddStudentForm = () => {
                     <label className="font-bold text-left">Student Department</label>
                     {/* dropdown Year */}
                     <select onChange={changeDepartment} defaultValue={department} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                        <option value={0}>Department</option>
-                        <option value={1}>CSE</option>
-                        <option value={2}>ECE</option>
-                        <option value={3}>MECH</option>
+                        <option value={""}>Department</option>
+                        <option value={"CSE"}>CSE</option>
+                        <option value={"ECE"}>ECE</option>
+                        <option value={"MECH"}>MECH</option>
+                        <option value={"CIVIL"}>CIVIL</option>
+                        <option value={"EEE"}>EEE</option>
                     </select>
                     <label className="font-bold text-left">Student Year</label>
-                    <select onChange={changeYear} defaultValue={year} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                        <option value={0}>Year</option>
-                        <option value={1}>1st year</option>
-                        <option value={2}>1st year</option>
-                        <option value={3}>1st year</option>
-                        <option value={4}>1st year</option>
+                    <select onChange={changeYear} defaultValue={""} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
+                        <option value={""}>Year</option>
+                        <option value={"1st year"}>1st year</option>
+                        <option value={"2nd year"}>2st year</option>
+                        <option value={"3rd year"}>3st year</option>
+                        <option value={"4th year"}>4st year</option>
                     </select>
                 </div>
                 <button onClick={handleSubmit} className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Add Student</button>
