@@ -4,8 +4,25 @@ import Student from "../models/Student.js";
 
 const router = express.Router();
 
-router.get( "/getallstudents" , (req,res)=>{
-    // code to get all the students
+router.get( "/getallstudents" , async (req,res)=>{
+    try {
+        const students = await Student.find({});
+        res.status(200).json(students)
+    } catch (error) {
+        res.status(504).json("error");
+    }
+    
+})
+
+router.get( "/getstudent/:su_id" , async (req,res)=>{
+    try {
+        const su_id = req.params.su_id;
+        const students = await Student.find({su_id:su_id});
+        res.status(200).json(students[0])
+    } catch (error) {
+        res.status(504).json("error");
+    }
+    
 })
 
 router.get( "/getbyyearanddep/:year/:department" , (req,res)=>{
@@ -35,9 +52,43 @@ router.delete( "/removestudent" , (req,res)=>{
     // code to remove students
 })
 
-router.post( "/updatestudent" , (req,res)=>{
+router.post( "/updatestudent" , async (req,res)=>{
     // code to update student
+    try {
+        const studentId = req.body.su_id;
+        const updates = req.body; 
+    
+        const student = await Student.findOneAndUpdate(
+            { su_id: studentId },
+            updates,
+            { new: true, runValidators: true } // Optionally return updated document
+          );
+    
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+        res.status(200).json(student);
+        
+    } catch (error) {
+        res.status(500).json(error);
+    }
 })
+
+router.delete("/removestudent/:su_id", async (req, res) => {
+    try {
+      const su_id = req.params.su_id;
+  
+      const student = await Student.findOneAndRemove({ su_id: su_id });
+  
+      if (!student) {
+        return res.status(404).json({ error: "Student not found" });
+      }
+  
+      res.status(200).json({ message: "Student removed successfully" });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  });
 
 router.get( "/getTodayspunches/" , (req,res)=>{
     // code to get all the student punches for today

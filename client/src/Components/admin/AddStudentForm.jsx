@@ -165,8 +165,7 @@ const AddStudentForm = () => {
 
             // appendDataToDB(studentData);
             addStudentToDb(dataToDb);
-  
-            // console.log("stored")
+            setRoll("");
             setDepartment("");
             setFaceDescriptor();
             setStudentName("");
