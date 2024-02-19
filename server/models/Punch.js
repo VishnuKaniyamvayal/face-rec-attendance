@@ -12,6 +12,11 @@ const PunchSchema = new mongoose.Schema({
     punchTime:
     { type : Date,
     default: Date.now 
+    },
+    isInformed:
+    {
+        type : Boolean,
+        default: false 
     }
 },
     {

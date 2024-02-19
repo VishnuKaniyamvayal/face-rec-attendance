@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from "axios"
+import { AuthContext } from "../../Context/AuthContext"
 import DataTable from 'react-data-table-component'
 
 const StudentList = () => {
 
     const [ data , setData ] = useState();
+
+    // const[punchId , setPunchId] = useState(null);
+    // const[status , setStatus] = useState(null);
+
+    const { user } = useContext(AuthContext)
 
     const fetchData = async()=>{
         try{
@@ -15,6 +21,21 @@ const StudentList = () => {
         catch(err){
             console.log(err)
         }
+    }
+
+    const handleChange = async( punchId , status )=>{
+        try{
+            const response = await axios.post( process.env.REACT_APP_BASE_URL + "api/student/updatepunch/"+ punchId ,{ isInformed:status });
+            if(response.status)
+            {
+                alert("Updated");
+            };
+
+        }
+        catch(error){
+            console.log(error)
+        }
+        
     }
 
     useEffect(()=>{
@@ -60,10 +81,26 @@ const StudentList = () => {
             cell:(row)=>{return(
                 <div className=''>
                 {
-                    row.status == "Present" ? <p className="text-green-500"> "Present" </p> : (row.status == "Late" ? <p className="text-yellow-500">Late</p>:<p className="text-red-500">absent</p>)
+                    row.status == "Present" ? <p className="text-green-500"> "Present" </p> : (row.status == "Late" ? <p className="text-yellow-600">Late</p>:<p className="text-red-500">Absent</p>)
                 }
                 </div>
             
+            )}
+            
+        },
+        {
+            name: 'Late Submission (if Late)',
+            width:"180px",
+            cell:(row)=>{return(
+                row.status == "Late"?
+                <div className=''>
+                    <select onChange={async(e)=>{ await handleChange( row.punchId , e.target.value )}} title={!user.isAdmin ? "Only Admins can update" : "Change the dropdown to update"} name="" id="" defaultValue={row.isInformed} disabled={!user.isAdmin} className="text-md px-2 py-1 bg-sky-500 text-white rounded-lg text-center disabled:bg-slate-400">
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
+                    </select>
+                </div>
+                :
+                ""
             )}
             
         },
@@ -77,7 +114,7 @@ const StudentList = () => {
                 <input type="date" className='border rounded-lg block p-2 shadow-md'/>
             {/* date  end*/}
             {/* dropdown department */}
-            <select id="countries" defaultValue={0} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
+            <select defaultValue={0} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
                 <option value={0}>Year</option>
                 <option >1st year</option>
                 <option >2nd Year</option>
@@ -89,7 +126,7 @@ const StudentList = () => {
 
             {/* dropdown Year */}
 
-            <select id="countries" defaultValue={0} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
+            <select defaultValue={0} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
                 <option value={0}>Department</option>
                 <option>CSE</option>
                 <option>ECE</option>

@@ -8,6 +8,7 @@ import AddStudent from './Pages/AddStudent'
 import { ToastContainer } from 'react-toastify';
 import { AuthContext } from "./Context/AuthContext";
 import EditStudent from "./Pages/EditStudent"
+import AddStaff from './Pages/AddStaff';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path='/students' element={<Students/>} />
           <Route path='/addstudent' element={<AddStudent/>} />
           <Route path='/editstudent/:id' element={<EditStudent/>} />
+          <Route path='/addstaff' element={<AddStaff/>} />
         </Routes>
       </Router>
       <ToastContainer/>

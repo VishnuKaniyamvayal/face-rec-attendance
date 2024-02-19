@@ -13,13 +13,12 @@ const Cards = () => {
         setTotalStudents(total.data.length)
         const Present = await axios.get(process.env.REACT_APP_BASE_URL + "api/student/getstudentswithstatus");
         const studentsWithStatus = Present.data.filter(student => student.status == "Present");
-        console.log(Present.data)
-        setstudentsPresent(studentsWithStatus.length)
         const studentsAbsent = Present.data.filter(student => student.status == "Absent");
         setAbsent(studentsAbsent.length)
         const studentsLate = Present.data.filter(student => student.status == "Late");
         setLate(studentsLate.length)
-        setAttendancePer(Math.floor((studentsPresent/totalStudents)*100) + "%" )
+        setstudentsPresent(studentsWithStatus.length + studentsLate.length)
+        setAttendancePer(((studentsPresent/totalStudents)*100) + "%" )
     }
 
     useEffect(()=>{

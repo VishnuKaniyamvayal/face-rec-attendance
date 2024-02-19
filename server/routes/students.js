@@ -16,16 +16,6 @@ router.get( "/getallstudents" , async (req,res)=>{
     
 })
 
-router.get( "/getallwithpresent" , async (req,res)=>{
-    try {
-        const students = await Student.find({});
-        res.status(200).json(students)
-    } catch (error) {
-        res.status(504).json("error");
-    }
-    
-})
-
 router.get( "/getstudent/:su_id" , async (req,res)=>{
     try {
         const su_id = req.params.su_id;
@@ -104,13 +94,31 @@ router.delete("/removestudent/:su_id", async (req, res) => {
     }
   });
 
-router.get( "/getTodayspunches/" , (req,res)=>{
-    // code to get all the student punches for today
+router.post( "/updatepunch/:p_id" , async(req,res)=>{
+    // code to update punch
+    try {
+        const punchId = req.params.p_id;
+        const updates = req.body; 
+        
+        console.log(punchId)
+
+        const punch = await Punch.findOneAndUpdate(
+            { _id: punchId },
+            updates,
+            { new: true, runValidators: true } // Optionally return updated document
+          );
+    
+        if (!punch) {
+            return res.status(404).json({ error: "Punch" });
+        }
+        res.status(200).json(punch);
+        
+    } catch (error) {
+        res.status(500).json(error);
+    }
+    
 })
 
-router.post( "/updatepunch/:p_id" , (req,res)=>{
-    // code to update punch
-})
 router.post( "/addpunch" , async (req,res)=>{
     // code to update punch
     try {
@@ -174,30 +182,31 @@ router.get("/getstudentswithstatus", async (req, res) => {
                     studentsWithStatus.push({
                         student: student,
                         status: "Late",
-                        hoursLate: hoursLate
+                        hoursLate: hoursLate,
+                        punchId: latestPunch._id,
+                        isInformed: latestPunch.isInformed
                     });
                 } else if (punchTimeUTC.isBefore(nineThirtyUTC)) {
                     // Check if punch is recorded before 9:30 in UTC
                     studentsWithStatus.push({
                         student: student,
-                        status: "Present"
+                        status: "Present",
                     });
                 } else {
                     // Punch time is after 16:00 in UTC
                     studentsWithStatus.push({
                         student: student,
-                        status: "Absent"
+                        status: "Absent",
                     });
                 }
             } else {
                 // No punch recorded for the student on the current date
                 studentsWithStatus.push({
                     student: student,
-                    status: "Absent"
+                    status: "Absent",
                 });
             }
         }
-
         // Send the result as JSON response
         res.status(200).json(studentsWithStatus);
     } catch (error) {

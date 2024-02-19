@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineDashboard } from "react-icons/ai";
-import { PiStudentFill } from "react-icons/pi";
+import { PiChalkboardTeacher, PiStudentFill } from "react-icons/pi";
 import { MdCamera } from "react-icons/md";
 import { IoIosPersonAdd } from "react-icons/io";
 
@@ -35,8 +35,8 @@ const Sidebar = () => {
                         <IoIosPersonAdd/>
                     </div>
                     <div className='flex items-center px-2'>
-                        <Link to="/attendance" className="block px-4 py-2 text-black hover:bg-gray-100">Attendance</Link>
-                        <MdCamera />
+                        <Link to="/addstaff" className="block px-4 py-2 text-black hover:bg-gray-100">Add Staff</Link>
+                        <PiChalkboardTeacher />
                     </div>
                 </div>
             </div>
