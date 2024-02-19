@@ -152,6 +152,10 @@ router.post( "/addpunch" , async (req,res)=>{
 
 router.get("/getstudentswithstatus", async (req, res) => {
     try {
+
+        const requestedDate = req.query.date;
+
+        const targetDate = requestedDate ? moment.utc(requestedDate, "YYYY-MM-DD").startOf('day') : moment().startOf('day');
         // Fetch all students
         const students = await Student.find({});
 
@@ -164,8 +168,8 @@ router.get("/getstudentswithstatus", async (req, res) => {
             const latestPunch = await Punch.findOne({
                 su_id: student.su_id,
                 createdAt:{
-                    $gte: moment().startOf('day'),
-                    $lt: moment().endOf('day')
+                    $gte: targetDate,
+                    $lt: moment.utc(targetDate).endOf('day')
                 }
             });
 
