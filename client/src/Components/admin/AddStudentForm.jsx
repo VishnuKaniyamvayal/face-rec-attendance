@@ -26,18 +26,20 @@ const AddStudentForm = () => {
 
     const [studentName, setStudentName] = useState("");
     const [roll, setRoll] = useState("");
-    const [department, setDepartment] = useState(0);
-    const [year, setYear] = useState(0);
+    const [department, setDepartment] = useState("");
+    const [year, setYear] = useState("");
+    const [gender, setGender] = useState("");
     const [faceDescriptor, setFaceDescriptor] = useState();
 
     const [camVisible, setCamVisible] = useState(false);
 
 
 
-    const changeName = (e) => { setStudentName(e.target.value);console.log(studentName) }
-    const changeRoll = (e) => { setRoll(e.target.value);console.log(roll)  }
-    const changeDepartment = (e) => { setDepartment(e.target.value);console.log(department)  }
-    const changeYear = (e) => { setYear(e.target.value); setCamVisible(true);console.log(year)  }
+    const changeName = (e) => { setStudentName(e.target.value); }
+    const changeRoll = (e) => { setRoll(e.target.value);  }
+    const changeDepartment = (e) => { setDepartment(e.target.value);  }
+    const changeYear = (e) => { setYear(e.target.value); }
+    const changeGender = (e) => { setGender(e.target.value); setCamVisible(true);  }
 
 
     // function to capture descriptor
@@ -137,13 +139,13 @@ const AddStudentForm = () => {
 
     //   student add function 
     const handleSubmit = () => {
-        if (!studentName || !roll || !year || !department) {
+        if (!studentName || !roll || !year || !department || !gender) {
             alert("Please fill all fields");
         }
-        // else if (!faceDescriptor) {
-        //     setCamVisible(true);
-        //     alert("Please scan your face")
-        // }
+        else if (!faceDescriptor) {
+            setCamVisible(true);
+            alert("Please scan your face")
+        }
         else {
             // create a hash for student unique id
             var su_id = generateRandomHash();
@@ -153,6 +155,7 @@ const AddStudentForm = () => {
                 roll,
                 year,
                 department,
+                gender,
                 faceDescriptor
             }
             var dataToDb = {
@@ -160,15 +163,17 @@ const AddStudentForm = () => {
                 studentName,
                 roll,
                 year,
-                department
+                gender,
+                department,
             } // face descriptor is not necessary
 
-            // appendDataToDB(studentData);
+            appendDataToDB(studentData);
             addStudentToDb(dataToDb);
             setRoll("");
             setDepartment("");
             setFaceDescriptor();
             setStudentName("");
+            setGender("");
 
         }
 
@@ -195,7 +200,7 @@ const AddStudentForm = () => {
                     <label className="font-bold text-left">Student Department</label>
                     {/* dropdown Year */}
                     <select onChange={changeDepartment} defaultValue={department} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                        <option value={""}>Department</option>
+                        <option value={""}>Select</option>
                         <option value={"CSE"}>CSE</option>
                         <option value={"ECE"}>ECE</option>
                         <option value={"MECH"}>MECH</option>
@@ -204,11 +209,17 @@ const AddStudentForm = () => {
                     </select>
                     <label className="font-bold text-left">Student Year</label>
                     <select onChange={changeYear} defaultValue={""} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                        <option value={""}>Year</option>
+                        <option value={""}>Select</option>
                         <option value={"1st year"}>1st year</option>
                         <option value={"2nd year"}>2st year</option>
                         <option value={"3rd year"}>3st year</option>
                         <option value={"4th year"}>4st year</option>
+                    </select>
+                    <label className="font-bold text-left">Gender</label>
+                    <select onChange={changeGender} defaultValue={""} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
+                        <option value={""}>Select</option>
+                        <option value={"Male"}>Male</option>
+                        <option value={"Female"}>Female</option>
                     </select>
                 </div>
                 <button onClick={handleSubmit} className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Add Student</button>

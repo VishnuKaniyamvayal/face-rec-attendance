@@ -17,6 +17,10 @@ const StudentSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    gender: {
+        type: String,
+        require: true
+    },
     su_id: {
         type: String,
         require: true

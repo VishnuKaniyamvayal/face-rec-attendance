@@ -1,10 +1,22 @@
 import express from "express";
 import Student from "../models/Student.js";
+import Punch from "../models/Punch.js"
+import moment from "moment"
 
 
 const router = express.Router();
 
 router.get( "/getallstudents" , async (req,res)=>{
+    try {
+        const students = await Student.find({});
+        res.status(200).json(students)
+    } catch (error) {
+        res.status(504).json("error");
+    }
+    
+})
+
+router.get( "/getallwithpresent" , async (req,res)=>{
     try {
         const students = await Student.find({});
         res.status(200).json(students)
@@ -36,11 +48,13 @@ router.post( "/addstudent" , async (req,res)=>{
             su_id: req.body.su_id,
             studentName: req.body.studentName,
             roll: req.body.roll,
+            gender:req.body.gender,
             year : req.body.year,
-            department: req.body.department
+            department: req.body.department,
+            faceDescriptor:req.body.faceDescriptor
         })
-        const studentres = await student.save();
-        res.status(201).json(studentres);
+        const students = await student.save();
+        res.status(201).json(students);
     }
     catch(err)
     {
@@ -97,5 +111,106 @@ router.get( "/getTodayspunches/" , (req,res)=>{
 router.post( "/updatepunch/:p_id" , (req,res)=>{
     // code to update punch
 })
+router.post( "/addpunch" , async (req,res)=>{
+    // code to update punch
+    try {
+        // Check if a punch has already been recorded for the student on the current date
+        const existingPunch = await Punch.findOne({
+            studentName: req.body.studentName,
+            su_id: req.body.su_id,
+            createdAt: {
+                $gte: moment().startOf('day'), // Check from the beginning of the current day
+                $lt: moment().endOf('day') // Check until the end of the current day
+            }
+        });
+        if (existingPunch) {
+            // If punch already recorded for today, send a different status
+            res.status(201).json({ message: 'Attendance already recorded for today' });
+        } else {
+            // If punch not recorded for today, save the new punch data
+            const punchData = new Punch({
+                studentName: req.body.studentName,
+                su_id: req.body.su_id
+            });
+            const response = await punchData.save();
+            res.status(201).json({message:"Attendance Recorded"});
+        }
+    } catch (error) {
+        res.status(504).json(error)
+        
+    }
+})
+
+
+router.get("/getstudentswithstatus", async (req, res) => {
+    try {
+        // Fetch all students
+        const students = await Student.find({});
+
+        // Initialize an array to store student details with status
+        const studentsWithStatus = [];
+
+        // Iterate through each student
+        for (const student of students) {
+            // Find the latest punch for the student on the current date
+            const latestPunch = await Punch.findOne({
+                su_id: student.su_id,
+                createdAt:{
+                    $gte: moment().startOf('day'),
+                    $lt: moment().endOf('day')
+                }
+            });
+
+            // If a punch is found
+            if (latestPunch) {
+                // Assuming 'latestPunch.createdAt' is in UTC
+                const punchTimeUTC = moment(latestPunch.createdAt);
+                const nineThirtyUTC = moment().startOf('day').add({ hours: 9, minutes: 30 });
+                const fourPMUTC = moment().startOf('day').add({ hours: 16, minutes: 0 });
+
+                // Check if punch time is between 9:30 and 16:00 in UTC
+                if (punchTimeUTC.isSameOrAfter(nineThirtyUTC) && punchTimeUTC.isBefore(fourPMUTC)) {
+                    const hoursLate = punchTimeUTC.diff(nineThirtyUTC, 'hours');
+                    studentsWithStatus.push({
+                        student: student,
+                        status: "Late",
+                        hoursLate: hoursLate
+                    });
+                } else if (punchTimeUTC.isBefore(nineThirtyUTC)) {
+                    // Check if punch is recorded before 9:30 in UTC
+                    studentsWithStatus.push({
+                        student: student,
+                        status: "Present"
+                    });
+                } else {
+                    // Punch time is after 16:00 in UTC
+                    studentsWithStatus.push({
+                        student: student,
+                        status: "Absent"
+                    });
+                }
+            } else {
+                // No punch recorded for the student on the current date
+                studentsWithStatus.push({
+                    student: student,
+                    status: "Absent"
+                });
+            }
+        }
+
+        // Send the result as JSON response
+        res.status(200).json(studentsWithStatus);
+    } catch (error) {
+        // Handle errors
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+  
+  
+
+
+
 
 export default router

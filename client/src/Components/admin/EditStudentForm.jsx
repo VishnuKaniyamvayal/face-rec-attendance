@@ -8,9 +8,9 @@ const AddStudentForm = () => {
     const fetchStudent = async()=>{
         const response = await axios.get(process.env.REACT_APP_BASE_URL + "api/student/getstudent/" + id)
         const student = response.data;
-        console.log(student)
         setDepartment(student.department);
         setStudentName(student.studentName);
+        setGender(student.gender);
         setRoll(student.roll);
         setYear(student.year);
     }
@@ -26,6 +26,7 @@ const AddStudentForm = () => {
     const [roll, setRoll] = useState("");
     const [department, setDepartment] = useState("");
     const [year, setYear] = useState("");
+    const [gender, setGender] = useState("");
 
 
 
@@ -33,6 +34,7 @@ const AddStudentForm = () => {
     const changeRoll = (e) => { setRoll(e.target.value) }
     const changeDepartment = (e) => { setDepartment(e.target.value) }
     const changeYear = (e) => { setYear(e.target.value);}
+    const changeGender = (e) => { setGender(e.target.value);}
 
     const updateStudent = () =>{
         try {
@@ -41,6 +43,7 @@ const AddStudentForm = () => {
                 roll,
                 department,
                 year,
+                gender,
                 su_id : id
             } 
             const response = axios.post(process.env.REACT_APP_BASE_URL + "api/student/updatestudent",data);
@@ -72,7 +75,7 @@ const AddStudentForm = () => {
                     <label className="font-bold text-left">Student Department</label>
                     {/* dropdown Year */}
                     <select value={department} onChange={changeDepartment} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                        <option value={0}>Department</option>
+                        <option value={""}>Select</option>
                         <option value={"CSE"}>CSE</option>
                         <option value={"ECE"}>ECE</option>
                         <option value={"MECH"}>MECH</option>
@@ -81,11 +84,16 @@ const AddStudentForm = () => {
                     </select>
                     <label className="font-bold text-left">Student Year</label>
                     <select onChange={changeYear} value={year} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
-                    <option value={""}>Year</option>
                         <option value={"1st year"}>1st year</option>
                         <option value={"2nd year"}>2st year</option>
                         <option value={"3rd year"}>3st year</option>
                         <option value={"4th year"}>4st year</option>
+                    </select>
+                    <label className="font-bold text-left">Gender</label>
+                    <select onChange={changeGender} value={gender} className="bg-white shadow-md border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5">
+                        <option value={""}>Select</option>
+                        <option value={"Male"}>Male</option>
+                        <option value={"Female"}>Female</option>
                     </select>
                 </div>
                 <button onClick={()=>{if(window.confirm("Are you sure to Update Record")){updateStudent();}}}  className="mt-6  px-5 py-1 text-xl bg-green-400 hover:bg-green-500 rounded-lg text-white shadow-lg">Update Student</button>

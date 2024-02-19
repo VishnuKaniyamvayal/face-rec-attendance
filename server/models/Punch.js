@@ -3,11 +3,15 @@ import mongoose from "mongoose";
 const PunchSchema = new mongoose.Schema({
     studentName: {
         type: String,
-        require: true
+        required: true
     },
     su_id: {
         type: String,
-        require: true
+        required: true
+    },
+    punchTime:
+    { type : Date,
+    default: Date.now 
     }
 },
     {

@@ -63,6 +63,11 @@ const StudentMain = () => {
             sortable: true,
         },
         {
+            name: 'Gender',
+            selector: row => row.gender,
+            sortable: true,
+        },
+        {
             name: 'Year',
             selector: row => row.year,
             sortable: true,

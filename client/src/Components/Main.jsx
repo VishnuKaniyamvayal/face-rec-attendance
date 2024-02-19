@@ -2,12 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import Webcam from 'react-webcam';
 import greenBox from '../images/greenBox.png';
+import axios from "axios"
 
 const Main = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [ face1 , setface ] = useState();
   const [ allDescriptors , setAllDescriptors ] = useState([]);
+  const [ faceScanningLoader , setFaceScanningLoader ] = useState(false);
+
+  // confirmation data 
+
+  const [ studentName , setStudentName ] = useState();
+  const [ roll , setRoll ] = useState();
+  const [ department , setDepartment ] = useState();
+  const [ year , setYear ] = useState();
+  const [ gender , setGender ] = useState("");
+  const [ su_id , setSu_id ] = useState("");
+
+  const addPunch = async() =>{
+    try {
+      const response = await axios.post(process.env.REACT_APP_BASE_URL + "api/student/addpunch",{ su_id , studentName });
+      alert(response.data.message);
+      setStudentName("");
+    } catch (error) {
+      console.log(error)
+      console.log("error"+error)
+    }
+  }
 
   useEffect(() => {
     const loadModels = async () => {
@@ -18,7 +40,7 @@ const Main = () => {
     };
 
     loadModels();
-
+    
 
   }, []);
 
@@ -82,20 +104,36 @@ const Main = () => {
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
         
         if (detections) {
-            setface( detections.descriptor );
-            fetchDataFromDB();
-            console.log ( allDescriptors , face1 )
-            let closestDescriptor = findClosestFaceDescriptor( allDescriptors , face1 );
+          const promise = new Promise((resolve, reject) => {
+            setface(detections.descriptor); 
+            resolve();
+          });
+          await promise;
+            await promise;
+            await fetchDataFromDB();
+            console.log ( allDescriptors )
+            let closestDescriptor = await findClosestFaceDescriptor( allDescriptors , face1 );
             console.log(closestDescriptor);
+            // Punch logic
+            setFaceScanningLoader(false)
+            setStudentName(closestDescriptor.descriptor.studentName);
+            setRoll(closestDescriptor.descriptor.roll);
+            setYear(closestDescriptor.descriptor.year)
+            setDepartment(closestDescriptor.descriptor.department)
+            setGender(closestDescriptor.descriptor.gender)
+            setSu_id(closestDescriptor.descriptor.su_id)
         }
       };
     }
   };
 
-  const findClosestFaceDescriptor = ( descriptorsObjects , queryDescriptor ) => {
+  const findClosestFaceDescriptor = async ( descriptorsObjects , queryDescriptor ) => {
     // Ensure descriptors and queryDescriptor are provided
-    if (!descriptorsObjects || !queryDescriptor) {
+    if (!descriptorsObjects) {
       throw new Error('descriptorsObjects and queryDescriptor are required.');
+    }
+    if (!queryDescriptor) {
+      throw new Error('queryDescriptor are required.');
     }
   
     // Initialize variables to store closest descriptor and distance
@@ -120,33 +158,33 @@ const Main = () => {
   
 
 // // Function to compare two face descriptors
-const areFaceDescriptorsEqual = (descriptor1, descriptor2, distanceThreshold = 0.6) => {
-    // Ensure both descriptors are provided
-    if (!descriptor1 || !descriptor2) {
-      throw new Error('Face descriptors are required for comparison.');
-    }
+// const areFaceDescriptorsEqual = (descriptor1, descriptor2, distanceThreshold = 0.6) => {
+//     // Ensure both descriptors are provided
+//     if (!descriptor1 || !descriptor2) {
+//       throw new Error('Face descriptors are required for comparison.');
+//     }
   
-    // Calculate the Euclidean distance between the two face descriptors
-    const distance = faceapi.euclideanDistance(descriptor1, descriptor2);
+//     // Calculate the Euclidean distance between the two face descriptors
+//     const distance = faceapi.euclideanDistance(descriptor1, descriptor2);
   
-    // Compare the distance with the threshold
-    console.log(distance);
-    // return distance < distanceThreshold;
-  };
+//     // Compare the distance with the threshold
+//     console.log(distance);
+//     // return distance < distanceThreshold;
+//   };
 
-const deleteall = ()=>{
-const dbName = 'FaceDataRC';
+// const deleteall = ()=>{
+// const dbName = 'FaceDataRC';
 
-const request = indexedDB.deleteDatabase(dbName);
+// const request = indexedDB.deleteDatabase(dbName);
 
-request.onsuccess = function(event) {
-  console.log('Database deleted:', dbName);
-};
+// request.onsuccess = function(event) {
+//   console.log('Database deleted:', dbName);
+// };
 
-request.onerror = function(event) {
-  console.error('Error deleting database:', event.error);
-};
-}
+// request.onerror = function(event) {
+//   console.error('Error deleting database:', event.error);
+// };
+// }
 
   return (
     <div>
@@ -160,22 +198,31 @@ request.onerror = function(event) {
         className="md:w-[1000px] rounded-md border-x-4"
         />
        <img src={greenBox} alt="" style={{position:"absolute",zIndex:"10",top:"10px",left:"0",}} />
-       <button onClick={capture} className='bg-green-400 px-4 py-1 rounded-md mx-4 hover:bg-green-600 hover:text-white ease-in-out my-[-100px] z-40'> Capture Face </button>
       </div>
       {/* details */}
       <>
         <div className='bg-teal-100 rounded-md flex gap-6 justify-start flex-col align-middle pt-5'>
+            { !studentName ? 
+            <div className=''>
+              <h1 onClick={()=>{ setFaceScanningLoader(true); capture()}} className={`mx-auto text-2xl p-5 bg-gray-400 w-[200px] h-[200px] text-center pt-20 rounded-full text-white hover:bg-gray-500 cursor-pointer ${faceScanningLoader?"animate-pulse":""}`}>Scan Face</h1>
+            </div>
+              :
+            <>
             <h2 className='font-bold text-2xl'>Student details</h2>
             <img className='w-[100px] h-[100px] mx-auto rounded-full' src="https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg" alt="" />
-            <h5 className='font-semibold'>Sudent Name : {"John"}</h5>
-            <h5 className='font-semibold'>Year : {"3rd year"}</h5>
-            <h5 className='font-semibold'>Department : {" Computer Science "}</h5>
-            <h5 className='font-semibold'>Gender : {"Male"} </h5>
+            <h5 className='font-semibold'>Sudent Name : {studentName}</h5>
+            <h5 className='font-semibold'>Year : {year}</h5>
+            <h5 className='font-semibold'>Roll Number : {roll}</h5>
+            <h5 className='font-semibold'>Department : {department}</h5>
+            <h5 className='font-semibold'>Gender : {gender} </h5>
+            
             <p>Are the data above correct ?</p>
             <div>
-            <button className='bg-green-400 px-4 py-1 rounded-md mx-4 hover:bg-green-600 hover:text-white ease-in-out'>Confirm</button>
-            <button className='bg-blue-400 px-4 py-1 rounded-md mx-4 hover:bg-blue-600 hover:text-white ease-in-out'>Rescan</button>
+            <button onClick={addPunch} className='bg-green-400 px-4 py-1 rounded-md mx-4 hover:bg-green-600 hover:text-white ease-in-out'>Confirm</button>
+            <button onClick={()=>{setStudentName("")}} className='bg-blue-400 px-4 py-1 rounded-md mx-4 hover:bg-blue-600 hover:text-white ease-in-out'>Rescan</button>
             </div>
+            </>
+            }
         </div>
     </>
       </div>
