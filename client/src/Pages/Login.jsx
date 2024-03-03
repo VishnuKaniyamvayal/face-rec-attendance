@@ -55,6 +55,16 @@ const Login = () => {
 
     return (
         <>
+            <nav className='grid-cols-1'>
+            {/* System Name */}
+            <div className='w-full flex justify-center align-middle py-6'>
+                <h1 className='text-5xl font-bold text-teal-900'>Attendance System</h1>
+            </div>
+            {/* other options like login */}
+            <div>
+                <button onClick={()=>{navigate("/")}} className='bg-gray-300 px-4 py-1 rounded-md hover:bg-gray-500 hover:text-white'>Scanner</button>
+            </div>
+        </nav>
             <div className='flex justify-center h-screen mt-[200px]'>
                 <div class="w-full max-w-sm">
                     <h1 className='text-3xl font-semibold'>Admin Login</h1>

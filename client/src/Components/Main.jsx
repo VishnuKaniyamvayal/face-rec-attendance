@@ -71,7 +71,6 @@ const Main = () => {
 
   const fetchDataFromDB = async () => {
     try {
-      console.log("fetchDataFromDB");
       const db = await openDB();
       const transaction = db.transaction(['Data'], 'readonly');
       const objectStore = transaction.objectStore('Data');
@@ -82,7 +81,7 @@ const Main = () => {
       getRequest.onsuccess = (event) => {
         const data = getRequest.result;
         setAllDescriptors(data)
-        console.log(data)
+        return data
       };
   
       getRequest.onerror = (event) => {
@@ -104,28 +103,27 @@ const Main = () => {
         const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
         
         if (detections) {
-          const promise = new Promise((resolve, reject) => {
             setface(detections.descriptor); 
-            resolve();
-          });
-          await promise;
-            await promise;
             await fetchDataFromDB();
-            console.log ( allDescriptors )
-            let closestDescriptor = await findClosestFaceDescriptor( allDescriptors , face1 );
-            console.log(closestDescriptor);
-            // Punch logic
-            setFaceScanningLoader(false)
-            setStudentName(closestDescriptor.descriptor.studentName);
-            setRoll(closestDescriptor.descriptor.roll);
-            setYear(closestDescriptor.descriptor.year)
-            setDepartment(closestDescriptor.descriptor.department)
-            setGender(closestDescriptor.descriptor.gender)
-            setSu_id(closestDescriptor.descriptor.su_id)
         }
       };
     }
   };
+
+  const faceScan = async() =>{
+    console.log("All",allDescriptors)
+    console.log("face",face1)
+    let closestDescriptor = await findClosestFaceDescriptor( allDescriptors , face1 );
+    console.log(closestDescriptor)
+    // Punch logic
+    setFaceScanningLoader(false)
+    setStudentName(closestDescriptor.descriptor.studentName);
+    setRoll(closestDescriptor.descriptor.roll);
+    setYear(closestDescriptor.descriptor.year)
+    setDepartment(closestDescriptor.descriptor.department)
+    setGender(closestDescriptor.descriptor.gender)
+    setSu_id(closestDescriptor.descriptor.su_id)
+  }
 
   const findClosestFaceDescriptor = async ( descriptorsObjects , queryDescriptor ) => {
     // Ensure descriptors and queryDescriptor are provided
@@ -205,6 +203,12 @@ const Main = () => {
             { !studentName ? 
             <div className=''>
               <h1 onClick={()=>{ setFaceScanningLoader(true); capture()}} className={`mx-auto text-2xl p-5 bg-gray-400 w-[200px] h-[200px] text-center pt-20 rounded-full text-white hover:bg-gray-500 cursor-pointer ${faceScanningLoader?"animate-pulse":""}`}>Scan Face</h1>
+              {
+                face1 && allDescriptors ? 
+                <h5 onClick={faceScan} className='text-xl bg-green-500 w-[200px] py-2 mx-auto mt-5 text-white rounded-md'>Detect Face</h5>
+                :
+                ""
+              }
             </div>
               :
             <>
